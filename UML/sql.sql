@@ -1,8 +1,8 @@
 use master
 go
-create database QLCD
+create database Data_XDPM 
 go
-use QLCD
+use Data_XDPM
 go
 create table KhachHang
 (
@@ -36,58 +36,56 @@ create table DVD
 	Id int identity primary key,
 	IdTitle int not null,
 	TinhTrang nvarchar(40) not null check(TinhTrang in ('TrenKe', 'Thue', 'DatTruoc' )),
+	FOREIGN KEY (IdTitle) REFERENCES dbo.Title(Id)
 )
 go
-create table ChiTietPhieuMuon
-(
-	IdPhieuMuon int not null,
-	IdDVD int not null,
-	NgayThue datetime null,
-	NgayTra datetime null,
-	PhiTre int null,
-	primary key (IdPhieuMuon, IdDVD)
-)
-go
+
 create table PhieuMuon
 (
 	Id int identity primary key,
 	IdKhachHang int not null,
-	NgayTao datetime
+	NgayTao DATETIME
+    FOREIGN KEY (IdKhachHang) REFERENCES dbo.KhachHang(Id)
 )
-go
-create table TienPhat
+GO
+create table ChiTietPhieuMuon
 (
-	Id int identity primary key,
-	IdKhachHang int not null,
+	IdPhieuMuon int not null,
 	IdDVD int not null,
-	NgayMuon datetime null,
 	NgayTra datetime null,
-	PhiPhat int null
-)
-go
-create table ChiTietPhieuDatTruoc
-(
-	IdPhieuDatTruoc int not null,
-	IdDVD int not null,
-	primary key (IdPhieuDatTruoc, IdDVD)
+	PhiTre int NOT NULL,
+	TinhTrang BIT, /*0-Da thanh toan_1-Chua thanh toan*/
+	primary key (IdPhieuMuon, IdDVD),
+	FOREIGN KEY (IdPhieuMuon) REFERENCES PhieuMuon(Id),
+	FOREIGN KEY (IdDVD) REFERENCES dbo.DVD(Id)
 )
 go
 create table PhieuDatTruoc
 (
 	Id int identity primary key,
 	IdKhachHang int not null,
-	NgayTao datetime
+	NgayTao DATETIME
+    FOREIGN KEY (IdKhachHang) REFERENCES dbo.KhachHang(Id)
 )
-
+GO
+create table ChiTietPhieuDatTruoc
+(
+	IdPhieuDatTruoc int not null,
+	IdDVD int not null,
+	primary key (IdPhieuDatTruoc, IdDVD),
+	FOREIGN KEY (IdPhieuDatTruoc) REFERENCES dbo.PhieuDatTruoc(Id),
+	FOREIGN KEY (IdDVD) REFERENCES dbo.DVD(Id)
+)
+go
 
 
 insert into KhachHang values ('Maria', 'Berlin', '030-0074321')
-insert into KhachHang values ('Ana', 'México', '(5) 555-4729')
+insert into KhachHang values ('Ana', 'Mexico', '(5) 555-4729')
 insert into KhachHang values ('Antonio', 'London', '(171) 555-7788')
-insert into KhachHang values ('Thomas', 'Luleå', '0921-12 34 65')
+insert into KhachHang values ('Thomas', 'Lule', '0921-12 34 65')
 
-insert into NhanVien values ('11111', 'Frédérique', 'Strasbourg', '88.60.15.31')
-insert into NhanVien values ('11111', 'Martín', 'Madrid', '(91) 555 22 82')
+insert into NhanVien values ('11111', 'Frederique', 'Strasbourg', '88.60.15.31')
+insert into NhanVien values ('11111', 'Marten', 'Madrid', '(91) 555 22 82')
 insert into NhanVien values ('11111', 'Laurence', 'Marseille', '91.24.45.40')
 
 insert into Title values ('Cuoc chien giua cac vi sao', 1, 20000, 10000, 5)
